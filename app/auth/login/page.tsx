@@ -38,12 +38,13 @@ export default function LoginPage() {
       })
 
       if (result.success) {
-        router.push('/dashboard')
-        router.refresh()
+        // Let middleware handle the redirect
+        // router.push('/dashboard')
+        // router.refresh()
+        window.location.href = '/dashboard';
       } else {
-        setError(result.error || 'Login failed. Please try again.')
+        setError(result.error || 'Login failed. Please check your credentials.')
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError('An unexpected error occurred')
     } finally {
@@ -52,7 +53,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-blue-50 to-gray-100 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-4 text-center">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
@@ -86,6 +87,7 @@ export default function LoginPage() {
                   placeholder="admin@inka.co.id"
                   className="pl-10"
                   required
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -103,15 +105,9 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   className="pl-10"
                   required
+                  disabled={loading}
                 />
               </div>
-            </div>
-
-            {/* Forgot Password Link */}
-            <div className="flex justify-end">
-              <Link href="/auth/forgot-password" className="text-sm text-blue-600 hover:underline">
-                Forgot password?
-              </Link>
             </div>
 
             {/* Submit Button */}
