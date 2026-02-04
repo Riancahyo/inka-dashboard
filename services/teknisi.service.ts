@@ -18,7 +18,6 @@ export interface TechnicianFilters {
   expertise?: string;
 }
 
-// Get all technicians with stats
 export async function getAllTechnicians(filters?: TechnicianFilters) {
   try {
     const query = supabase
@@ -33,30 +32,24 @@ export async function getAllTechnicians(filters?: TechnicianFilters) {
       throw error;
     }
 
-    // Calculate stats for each technician
     const techniciansWithStats: TechnicianWithStats[] = await Promise.all(
       (data || []).map(async (tech: any) => {
-        // Get total assigned reports
         const { count: totalAssigned } = await supabase
           .from("crash_report")
           .select("*", { count: "exact", head: true })
           .eq("technician_id", tech.id);
-
-        // Get active reports (Open + On Progress)
         const { count: activeReports } = await supabase
           .from("crash_report")
           .select("*", { count: "exact", head: true })
           .eq("technician_id", tech.id)
           .in("status", ["Open", "On Progress"]);
 
-        // Get completed reports
         const { count: completedReports } = await supabase
           .from("crash_report")
           .select("*", { count: "exact", head: true })
           .eq("technician_id", tech.id)
           .eq("status", "Finished");
 
-        // Calculate performance score (completion rate)
         const performanceScore =
           totalAssigned && totalAssigned > 0
             ? Math.round(((completedReports || 0) / totalAssigned) * 100)
@@ -72,7 +65,6 @@ export async function getAllTechnicians(filters?: TechnicianFilters) {
       }),
     );
 
-    // Apply filters
     let result = techniciansWithStats;
 
     if (filters?.search) {
@@ -96,10 +88,9 @@ export async function getAllTechnicians(filters?: TechnicianFilters) {
   }
 }
 
-// Get single technician by ID with full details
 export async function getTechnicianById(id: string) {
   try {
-    console.log("🔍 Fetching technician with ID:", id);
+    console.log("Fetching technician with ID:", id);
 
     const { data: technician, error } = await supabase
       .from("technicians")
@@ -108,16 +99,14 @@ export async function getTechnicianById(id: string) {
       .single();
 
     if (error) {
-      console.error("❌ Supabase error:", error);
+      console.error("Supabase error:", error);
       throw error;
     }
 
     if (!technician) {
-      console.error("❌ No technician found for ID:", id);
+      console.error("No technician found for ID:", id);
       return null;
     }
-
-    // Get all assigned crash reports
     interface CrashReport {
       id: string;
       severity: string;
@@ -154,7 +143,6 @@ export async function getTechnicianById(id: string) {
       console.error("Error fetching crash reports:", crashError);
     }
 
-    // Calculate stats
     const typedCrashReports = (crashReports || []) as CrashReport[];
     const totalAssigned = typedCrashReports.length || 0;
     const activeReports =
@@ -168,7 +156,7 @@ export async function getTechnicianById(id: string) {
         ? Math.round((completedReports / totalAssigned) * 100)
         : 0;
 
-    console.log("✅ Successfully fetched technician with details");
+    console.log("Successfully fetched technician with details");
 
     return {
       ...technician,
@@ -181,12 +169,11 @@ export async function getTechnicianById(id: string) {
       },
     };
   } catch (error: any) {
-    console.error("❌ Error in getTechnicianById:", error);
+    console.error("Error in getTechnicianById:", error);
     return null;
   }
 }
 
-// Create new technician
 export async function createTechnician(technician: TechnicianInsert) {
   try {
     const { data, error } = await supabase
@@ -204,7 +191,6 @@ export async function createTechnician(technician: TechnicianInsert) {
   }
 }
 
-// Update technician
 export async function updateTechnician(id: string, updates: TechnicianUpdate) {
   try {
     const { data, error } = await supabase
@@ -223,7 +209,6 @@ export async function updateTechnician(id: string, updates: TechnicianUpdate) {
   }
 }
 
-// Delete technician
 export async function deleteTechnician(id: string) {
   try {
     const { error } = await supabase.from("technicians").delete().eq("id", id);
@@ -237,7 +222,6 @@ export async function deleteTechnician(id: string) {
   }
 }
 
-// Get unique expertise for filter
 export async function getTechnicianExpertise() {
   try {
     const { data, error } = await supabase
@@ -247,7 +231,6 @@ export async function getTechnicianExpertise() {
 
     if (error) throw error;
 
-    // Get unique expertise
     const uniqueExpertise = [...new Set(data?.map((t) => t.expertise) || [])];
     return uniqueExpertise;
   } catch (error) {
@@ -256,15 +239,12 @@ export async function getTechnicianExpertise() {
   }
 }
 
-// Get technician stats
 export async function getTechnicianStats() {
   try {
-    // Total technicians
     const { count: totalTechnicians } = await supabase
       .from("technicians")
       .select("*", { count: "exact", head: true });
 
-    // Active technicians (with active reports)
     const { data: activeData } = await supabase
       .from("crash_report")
       .select("technician_id")
@@ -274,13 +254,11 @@ export async function getTechnicianStats() {
     const activeTechnicians = new Set(activeData?.map((r) => r.technician_id))
       .size;
 
-    // Total reports assigned
     const { count: totalAssigned } = await supabase
       .from("crash_report")
       .select("*", { count: "exact", head: true })
       .not("technician_id", "is", null);
 
-    // Completed reports
     const { count: completedReports } = await supabase
       .from("crash_report")
       .select("*", { count: "exact", head: true })

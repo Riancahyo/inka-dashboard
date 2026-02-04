@@ -32,7 +32,6 @@ export interface LaporanFilters {
   dateTo?: string
 }
 
-// Get all laporan with filters
 export async function getAllLaporan(filters?: LaporanFilters) {
   try {
     let query = supabase
@@ -52,7 +51,6 @@ export async function getAllLaporan(filters?: LaporanFilters) {
       `)
       .order('reported_date', { ascending: false })
 
-    // Apply filters
     if (filters?.severity) {
       query = query.eq('severity', filters.severity)
     }
@@ -76,7 +74,6 @@ export async function getAllLaporan(filters?: LaporanFilters) {
       throw error
     }
 
-    // Filter by search after fetch (because we can't use OR with nested fields easily)
     let result = (data as LaporanWithDetails[]) || []
     
     if (filters?.search) {
@@ -95,10 +92,9 @@ export async function getAllLaporan(filters?: LaporanFilters) {
   }
 }
 
-// Get single laporan by ID
 export async function getLaporanById(id: string) {
   try {
-    console.log('🔍 Fetching laporan with ID:', id)
+    console.log('Fetching laporan with ID:', id)
     
     const { data, error } = await supabase
       .from('crash_report')
@@ -122,7 +118,7 @@ export async function getLaporanById(id: string) {
       .single()
 
     if (error) {
-      console.error('❌ Supabase error:', {
+      console.error('Supabase error:', {
         message: error.message,
         details: error.details,
         hint: error.hint,
@@ -132,14 +128,14 @@ export async function getLaporanById(id: string) {
     }
 
     if (!data) {
-      console.error('❌ No data returned for ID:', id)
+      console.error('No data returned for ID:', id)
       return null
     }
 
-    console.log('✅ Successfully fetched laporan')
+    console.log('Successfully fetched laporan')
     return data as LaporanWithDetails
   } catch (error: any) {
-    console.error('❌ Error in getLaporanById:', {
+    console.error('Error in getLaporanById:', {
       message: error?.message,
       details: error?.details,
       code: error?.code
@@ -148,7 +144,6 @@ export async function getLaporanById(id: string) {
   }
 }
 
-// Create new laporan
 export async function createLaporan(laporan: LaporanInsert) {
   try {
     const { data, error } = await supabase
@@ -166,7 +161,6 @@ export async function createLaporan(laporan: LaporanInsert) {
   }
 }
 
-// Update laporan
 export async function updateLaporan(id: string, updates: LaporanUpdate) {
   try {
     const { data, error } = await supabase
@@ -185,7 +179,6 @@ export async function updateLaporan(id: string, updates: LaporanUpdate) {
   }
 }
 
-// Delete laporan
 export async function deleteLaporan(id: string) {
   try {
     const { error } = await supabase
@@ -202,7 +195,6 @@ export async function deleteLaporan(id: string) {
   }
 }
 
-// Get all trains for dropdown
 export async function getAllTrains() {
   try {
     const { data, error } = await supabase
@@ -219,7 +211,6 @@ export async function getAllTrains() {
   }
 }
 
-// Get all technicians for dropdown
 export async function getAllTechnicians() {
   try {
     const { data, error } = await supabase

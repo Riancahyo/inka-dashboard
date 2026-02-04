@@ -29,7 +29,6 @@ export function ProfileSettings() {
     e.preventDefault()
     setLoading(true)
 
-    // Simulate API call
     setTimeout(() => {
       setLoading(false)
       alert('Profile updated successfully!')

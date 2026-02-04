@@ -28,32 +28,27 @@ export interface RecentIssue {
 
 export async function getDashboardStats(): Promise<DashboardStats> {
   try {
-    // Get current month start date
     const now = new Date();
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const firstDayString = firstDayOfMonth.toISOString();
 
-    // Total kerusakan bulan ini
     const { count: totalKerusakan } = await supabase
       .from("crash_report")
       .select("*", { count: "exact", head: true })
       .gte("reported_date", firstDayString);
 
-    // Kerusakan berat (High + Critical)
     const { count: kerusakanBerat } = await supabase
       .from("crash_report")
       .select("*", { count: "exact", head: true })
       .in("severity", ["High", "Critical"])
       .eq("status", "Open");
 
-    // Maintenance completed
     const { count: maintenanceCompleted } = await supabase
       .from("maintenance")
       .select("*", { count: "exact", head: true })
       .eq("status", "Completed")
       .gte("schedule_date", firstDayString);
 
-    // Teknisi aktif (yang punya laporan On Progress)
     const { data: teknisiAktif } = await supabase
       .from("crash_report")
       .select("technician_id")
@@ -86,7 +81,6 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 
 export async function getWeeklyReportsData(): Promise<WeeklyData[]> {
   try {
-    // Get last 4 weeks data
     const fourWeeksAgo = new Date();
     fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
 
@@ -98,7 +92,6 @@ export async function getWeeklyReportsData(): Promise<WeeklyData[]> {
 
     if (error) throw error;
 
-    // Group by week
     const weeklyData: Record<string, number> = {};
 
     const typedData = data as Array<{ reported_date: string }> | null;
@@ -131,7 +124,6 @@ export async function getCategoryDistribution(): Promise<CategoryData[]> {
 
     if (error) throw error;
 
-    // Count by severity
     const severityCounts: Record<string, number> = {};
 
     const typedData = data as Array<{ severity: string }> | null;
@@ -173,7 +165,6 @@ export async function getRecentIssues(
 
     if (error) throw error;
 
-    // Type assertion for nested query result
     type QueryResult = {
       id: string;
       severity: string;

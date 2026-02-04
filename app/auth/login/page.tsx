@@ -38,9 +38,6 @@ export default function LoginPage() {
       })
 
       if (result.success) {
-        // Let middleware handle the redirect
-        // router.push('/dashboard')
-        // router.refresh()
         window.location.href = '/dashboard';
       } else {
         setError(result.error || 'Login failed. Please check your credentials.')
@@ -53,7 +50,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-blue-50 to-gray-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-4 text-center">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
@@ -66,7 +63,6 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Error Alert */}
             {error && (
               <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
                 <AlertCircle className="h-4 w-4" />
@@ -74,7 +70,6 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Email */}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -92,7 +87,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Password */}
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
@@ -110,7 +104,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Submit Button */}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? (
                 <>
@@ -122,7 +115,6 @@ export default function LoginPage() {
               )}
             </Button>
 
-            {/* Register Link */}
             <div className="text-center text-sm text-gray-600">
               Dont have an account?{' '}
               <Link href="/auth/register" className="font-medium text-blue-600 hover:underline">

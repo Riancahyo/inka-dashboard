@@ -1,9 +1,11 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { Bell, Search, User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,10 +14,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { signOut } from '@/lib/auth'
+import { signOut, getUserProfile } from '@/lib/auth'
+import { getRoleLabel, getRoleBadgeColor } from '@/types/roles'
+import type { UserProfile } from '@/types/roles'
 
 export function Topbar() {
   const router = useRouter()
+  const [profile, setProfile] = useState<UserProfile | null>(null)
+
+  useEffect(() => {
+    async function loadProfile() {
+      const userProfile = await getUserProfile()
+      setProfile(userProfile)
+    }
+    loadProfile()
+  }, [])
 
   const handleLogout = async () => {
     const result = await signOut()
@@ -42,6 +55,13 @@ export function Topbar() {
 
         {/* Right Section */}
         <div className="flex items-center gap-4">
+          {/* Role Badge */}
+          {profile && (
+            <Badge variant="outline" className={getRoleBadgeColor(profile.role)}>
+              {getRoleLabel(profile.role)}
+            </Badge>
+          )}
+
           {/* Notifications */}
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="h-5 w-5" />
@@ -56,8 +76,8 @@ export function Topbar() {
                   <User className="h-4 w-4 text-blue-600" />
                 </div>
                 <div className="hidden text-left md:block">
-                  <p className="text-sm font-medium">Admin User</p>
-                  <p className="text-xs text-gray-500">admin@inka.co.id</p>
+                  <p className="text-sm font-medium">{profile?.name || 'User'}</p>
+                  <p className="text-xs text-gray-500">{profile?.email || ''}</p>
                 </div>
               </Button>
             </DropdownMenuTrigger>
@@ -67,7 +87,17 @@ export function Topbar() {
               <DropdownMenuItem onClick={() => router.push('/dashboard/settings')}>
                 Settings
               </DropdownMenuItem>
-              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push('/dashboard/profile')}>
+                Profile
+              </DropdownMenuItem>
+              {profile?.role === 'admin' && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => router.push('/dashboard/users')}>
+                    Manage Users
+                  </DropdownMenuItem>
+                </>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-red-600 focus:text-red-600"

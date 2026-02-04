@@ -39,7 +39,6 @@ export interface MaintenanceFilters {
   dateTo?: string
 }
 
-// Get all maintenance with filters
 export async function getAllMaintenance(filters?: MaintenanceFilters) {
   try {
     let query = supabase
@@ -54,7 +53,6 @@ export async function getAllMaintenance(filters?: MaintenanceFilters) {
       `)
       .order('schedule_date', { ascending: false })
 
-    // Apply filters
     if (filters?.urgency) {
       query = query.eq('urgency', filters.urgency)
     }
@@ -78,7 +76,6 @@ export async function getAllMaintenance(filters?: MaintenanceFilters) {
       throw error
     }
 
-    // Apply search filter
     let result = (data as MaintenanceWithDetails[]) || []
 
     if (filters?.search) {
@@ -98,10 +95,9 @@ export async function getAllMaintenance(filters?: MaintenanceFilters) {
   }
 }
 
-// Get single maintenance by ID
 export async function getMaintenanceById(id: string) {
   try {
-    console.log('🔍 Fetching maintenance with ID:', id)
+    console.log('Fetching maintenance with ID:', id)
 
     const { data, error } = await supabase
       .from('maintenance')
@@ -119,24 +115,23 @@ export async function getMaintenanceById(id: string) {
       .single()
 
     if (error) {
-      console.error('❌ Supabase error:', error)
+      console.error('Supabase error:', error)
       throw error
     }
 
     if (!data) {
-      console.error('❌ No maintenance found for ID:', id)
+      console.error('No maintenance found for ID:', id)
       return null
     }
 
-    console.log('✅ Successfully fetched maintenance')
+    console.log('Successfully fetched maintenance')
     return data as MaintenanceWithDetails
   } catch (error: any) {
-    console.error('❌ Error in getMaintenanceById:', error)
+    console.error('Error in getMaintenanceById:', error)
     return null
   }
 }
 
-// Create new maintenance
 export async function createMaintenance(maintenance: MaintenanceInsert) {
   try {
     const { data, error } = await supabase
@@ -154,7 +149,6 @@ export async function createMaintenance(maintenance: MaintenanceInsert) {
   }
 }
 
-// Update maintenance
 export async function updateMaintenance(id: string, updates: MaintenanceUpdate) {
   try {
     const { data, error } = await supabase
@@ -173,7 +167,6 @@ export async function updateMaintenance(id: string, updates: MaintenanceUpdate) 
   }
 }
 
-// Update maintenance status only
 export async function updateMaintenanceStatus(id: string, status: string) {
   try {
     const { data, error } = await supabase
@@ -192,7 +185,6 @@ export async function updateMaintenanceStatus(id: string, status: string) {
   }
 }
 
-// Delete maintenance
 export async function deleteMaintenance(id: string) {
   try {
     const { error } = await supabase.from('maintenance').delete().eq('id', id)
@@ -206,10 +198,8 @@ export async function deleteMaintenance(id: string) {
   }
 }
 
-// Get maintenance statistics
 export async function getMaintenanceStats() {
   try {
-    // Total maintenance this month
     const now = new Date()
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
     const firstDayString = firstDayOfMonth.toISOString()
@@ -219,19 +209,16 @@ export async function getMaintenanceStats() {
       .select('*', { count: 'exact', head: true })
       .gte('schedule_date', firstDayString)
 
-    // Pending maintenance
     const { count: pending } = await supabase
       .from('maintenance')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'Pending')
 
-    // Completed maintenance
     const { count: completed } = await supabase
       .from('maintenance')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'Completed')
 
-    // Urgent maintenance
     const { count: urgent } = await supabase
       .from('maintenance')
       .select('*', { count: 'exact', head: true })
@@ -255,7 +242,6 @@ export async function getMaintenanceStats() {
   }
 }
 
-// Get upcoming maintenance (next 7 days)
 export async function getUpcomingMaintenance() {
   try {
     const now = new Date()

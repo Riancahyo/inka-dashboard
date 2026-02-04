@@ -66,14 +66,12 @@ export default function RegisterPage() {
 
       if (result.success) {
         setSuccess(true)
-        // Wait 2 seconds then redirect to login
         setTimeout(() => {
           router.push('/auth/login')
         }, 2000)
       } else {
         setError(result.error || 'Registration failed. Please try again.')
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError('An unexpected error occurred')
     } finally {
@@ -121,7 +119,6 @@ export default function RegisterPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Error Alert */}
             {error && (
               <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
                 <AlertCircle className="h-4 w-4" />
@@ -129,7 +126,6 @@ export default function RegisterPage() {
               </div>
             )}
 
-            {/* Name */}
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
               <div className="relative">
@@ -145,7 +141,6 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Email */}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -162,7 +157,6 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Password */}
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
@@ -180,7 +174,6 @@ export default function RegisterPage() {
               <p className="text-xs text-gray-500">Minimum 6 characters</p>
             </div>
 
-            {/* Confirm Password */}
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
               <div className="relative">
@@ -197,7 +190,6 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Submit Button */}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? (
                 <>
@@ -209,7 +201,6 @@ export default function RegisterPage() {
               )}
             </Button>
 
-            {/* Login Link */}
             <div className="text-center text-sm text-gray-600">
               Already have an account?{' '}
               <Link href="/auth/login" className="font-medium text-blue-600 hover:underline">

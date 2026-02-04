@@ -32,7 +32,6 @@ export interface TrainFilters {
   kondisi?: string;
 }
 
-// Get all trains with stats
 export async function getAllTrains(filters?: TrainFilters) {
   try {
     const query = supabase
@@ -53,17 +52,14 @@ export async function getAllTrains(filters?: TrainFilters) {
       throw error;
     }
 
-    // Process data to add stats
     const trainsWithStats: TrainWithStats[] = await Promise.all(
       (data || []).map(async (train: TrainData) => {
-        // Get open crash reports count
         const { count: openReports } = await supabase
           .from("crash_report")
           .select("*", { count: "exact", head: true })
           .eq("train_id", train.id)
           .in("status", ["Open", "On Progress"]);
 
-        // Get last maintenance date
         const { data: lastMaintenance } = await supabase
           .from("maintenance")
           .select("schedule_date")
@@ -72,7 +68,6 @@ export async function getAllTrains(filters?: TrainFilters) {
           .limit(1)
           .single();
 
-        // Determine kondisi
         let kondisi: "Layak" | "Perbaikan" | "Maintenance" = "Layak";
         if (openReports && openReports > 0) {
           kondisi = "Perbaikan";
@@ -89,7 +84,6 @@ export async function getAllTrains(filters?: TrainFilters) {
       }),
     );
 
-    // Apply filters
     let result = trainsWithStats;
 
     if (filters?.search) {
@@ -116,10 +110,9 @@ export async function getAllTrains(filters?: TrainFilters) {
   }
 }
 
-// Get single train by ID with full details
 export async function getTrainById(id: string) {
   try {
-    console.log("🔍 Fetching train with ID:", id);
+    console.log("Fetching train with ID:", id);
 
     const { data: train, error } = await supabase
       .from("trains")
@@ -128,16 +121,15 @@ export async function getTrainById(id: string) {
       .single();
 
     if (error) {
-      console.error("❌ Supabase error:", error);
+      console.error("Supabase error:", error);
       throw error;
     }
 
     if (!train) {
-      console.error("❌ No train found for ID:", id);
+      console.error("No train found for ID:", id);
       return null;
     }
 
-    // Get crash reports for this train
     const { data: crashReports, error: crashError } = await supabase
       .from("crash_report")
       .select(
@@ -160,7 +152,6 @@ export async function getTrainById(id: string) {
       console.error("Error fetching crash reports:", crashError);
     }
 
-    // Get maintenance for this train
     const { data: maintenanceList, error: maintenanceError } = await supabase
       .from("maintenance")
       .select("*")
@@ -171,7 +162,6 @@ export async function getTrainById(id: string) {
       console.error("Error fetching maintenance:", maintenanceError);
     }
 
-    // Get inspections for this train
     const { data: inspections, error: inspectionsError } = await supabase
       .from("inspections")
       .select("*")
@@ -182,7 +172,7 @@ export async function getTrainById(id: string) {
       console.error("Error fetching inspections:", inspectionsError);
     }
 
-    console.log("✅ Successfully fetched train with details");
+    console.log("Successfully fetched train with details");
 
     return {
       ...train,
@@ -191,12 +181,11 @@ export async function getTrainById(id: string) {
       inspections: inspections || [],
     };
   } catch (error: any) {
-    console.error("❌ Error in getTrainById:", error);
+    console.error("Error in getTrainById:", error);
     return null;
   }
 }
 
-// Create new train
 export async function createTrain(train: TrainInsert) {
   try {
     const { data, error } = await supabase
@@ -214,7 +203,6 @@ export async function createTrain(train: TrainInsert) {
   }
 }
 
-// Update train
 export async function updateTrain(id: string, updates: TrainUpdate) {
   try {
     const { data, error } = await supabase
@@ -233,7 +221,6 @@ export async function updateTrain(id: string, updates: TrainUpdate) {
   }
 }
 
-// Delete train
 export async function deleteTrain(id: string) {
   try {
     const { error } = await supabase.from("trains").delete().eq("id", id);
@@ -247,7 +234,6 @@ export async function deleteTrain(id: string) {
   }
 }
 
-// Get unique train types for filter
 export async function getTrainTypes() {
   try {
     const { data, error } = await supabase
@@ -257,7 +243,6 @@ export async function getTrainTypes() {
 
     if (error) throw error;
 
-    // Get unique types
     const uniqueTypes = [...new Set(data?.map((t) => t.type) || [])];
     return uniqueTypes;
   } catch (error) {
