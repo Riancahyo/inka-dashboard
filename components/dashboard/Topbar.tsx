@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Bell, Search, User } from 'lucide-react'
+import { Search, User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -17,6 +17,7 @@ import {
 import { signOut, getUserProfile } from '@/lib/auth'
 import { getRoleLabel, getRoleBadgeColor } from '@/types/roles'
 import type { UserProfile } from '@/types/roles'
+import { NotificationBell } from '@/components/notifications/NotificationBell'
 
 export function Topbar() {
   const router = useRouter()
@@ -41,7 +42,6 @@ export function Topbar() {
   return (
     <header className="fixed left-64 right-0 top-0 z-30 h-16 border-b border-gray-200 bg-white">
       <div className="flex h-full items-center justify-between px-6">
-        {/* Search */}
         <div className="flex-1 max-w-md">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -53,22 +53,15 @@ export function Topbar() {
           </div>
         </div>
 
-        {/* Right Section */}
         <div className="flex items-center gap-4">
-          {/* Role Badge */}
           {profile && (
             <Badge variant="outline" className={getRoleBadgeColor(profile.role)}>
               {getRoleLabel(profile.role)}
             </Badge>
           )}
 
-          {/* Notifications */}
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="h-5 w-5" />
-            <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
-          </Button>
+          <NotificationBell />
 
-          {/* Profile Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="gap-2">
