@@ -8,6 +8,7 @@ import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { LaporanTable } from '@/components/tables/LaporanTable'
 import { LaporanFilters } from '@/components/filters/LaporanFilters'
 import { getAllLaporan } from '@/services/laporan.service'
+import { ExportButton } from '@/components/export/ExportButton';
 
 interface PageProps {
   searchParams: {
@@ -20,7 +21,7 @@ interface PageProps {
 }
 
 async function LaporanList({ searchParams }: PageProps) {
-    const params = await searchParams;
+  const params = await searchParams;
   const laporan = await getAllLaporan({
     search: params.search,
     severity: params.severity,
@@ -41,18 +42,23 @@ async function LaporanList({ searchParams }: PageProps) {
   )
 }
 
-export default function LaporanPage({ searchParams }: PageProps) {
+export default async function LaporanPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  
   return (
     <PageContainer
       title="Laporan Kerusakan"
       description="Daftar semua laporan kerusakan kereta"
       action={
-        <Button asChild>
-          <Link href="/dashboard/laporan/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Laporan
-          </Link>
-        </Button>
+        <>
+          <Button asChild>
+            <Link href="/dashboard/laporan/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Tambah Laporan
+            </Link>
+          </Button>
+          <ExportButton filters={params} />
+        </>
       }
     >
       <Suspense
