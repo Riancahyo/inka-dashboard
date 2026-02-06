@@ -44,10 +44,10 @@ export default function KeretaPage({ searchParams }: PageProps) {
       title="Inventaris Kereta"
       description="Daftar semua kereta dan kondisinya"
       action={
-        <Button asChild>
+        <Button asChild className="w-10 p-0 sm:w-auto sm:px-4">
           <Link href="/dashboard/kereta/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Kereta
+            <Plus className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Tambah Kereta</span>
           </Link>
         </Button>
       }

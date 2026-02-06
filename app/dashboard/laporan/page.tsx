@@ -50,15 +50,15 @@ export default async function LaporanPage({ searchParams }: PageProps) {
       title="Laporan Kerusakan"
       description="Daftar semua laporan kerusakan kereta"
       action={
-        <>
-          <Button asChild>
+        <div className="flex gap-2">
+          <Button asChild className="w-10 p-0 sm:w-auto sm:px-4">
             <Link href="/dashboard/laporan/new">
-              <Plus className="mr-2 h-4 w-4" />
-              Tambah Laporan
+              <Plus className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Tambah Laporan</span>
             </Link>
           </Button>
           <ExportButton filters={params} />
-        </>
+        </div>
       }
     >
       <Suspense

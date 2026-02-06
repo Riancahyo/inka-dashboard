@@ -52,9 +52,14 @@ export function ExportButton({ filters, variant = 'outline', size = 'default' }:
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={variant} size={size} disabled={exporting}>
-          <Download className="mr-2 h-4 w-4" />
-          Export
+        <Button 
+          variant={variant} 
+          size={size} 
+          disabled={exporting}
+          className="w-10 p-0 sm:w-auto sm:px-4"
+        >
+          <Download className="h-4 w-4 sm:mr-2" />
+          <span className="hidden sm:inline">Export</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

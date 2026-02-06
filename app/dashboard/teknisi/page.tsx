@@ -78,10 +78,10 @@ export default function TeknisiPage({ searchParams }: PageProps) {
       title="Teknisi"
       description="Daftar teknisi dan performa mereka"
       action={
-        <Button asChild>
+        <Button asChild className="w-10 p-0 sm:w-auto sm:px-4">
           <Link href="/dashboard/teknisi/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Teknisi
+            <Plus className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Tambah Teknisi</span>
           </Link>
         </Button>
       }

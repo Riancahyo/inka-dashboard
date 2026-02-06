@@ -84,10 +84,10 @@ export default function MaintenancePage({ searchParams }: PageProps) {
       title="Jadwal Maintenance"
       description="Kelola jadwal maintenance kereta"
       action={
-        <Button asChild>
+        <Button asChild className="w-10 p-0 sm:w-auto sm:px-4">
           <Link href="/dashboard/maintenance/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Schedule Maintenance
+            <Plus className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Schedule Maintenance</span>
           </Link>
         </Button>
       }
